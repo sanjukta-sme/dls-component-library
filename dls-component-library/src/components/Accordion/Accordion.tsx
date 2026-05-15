@@ -1,11 +1,24 @@
 import { useState, useCallback, useMemo, useRef } from 'react'
 import type { AccordionProps } from './Accordion.types'
 
+/**
+ * Merges class names, filtering out falsy values.
+ * Kept internal — not worth pulling in clsx for four call sites.
+ */
+function cx(...classes: (string | undefined | null | false)[]): string | undefined {
+  const merged = classes.filter(Boolean).join(' ')
+  return merged || undefined
+}
+
 export function Accordion({
   items,
   shouldAllowMultipleExpanded = true,
   expandedIds: controlledExpandedIds,
   onChange,
+  className,
+  style,
+  slots,
+  slotProps,
 }: AccordionProps) {
   // Uncontrolled mode: manage state internally
   const [uncontrolledExpandedIds, setUncontrolledExpandedIds] = useState<string[]>([])
@@ -114,14 +127,25 @@ export function Accordion({
   )
 
   return (
-    <div>
+    <div
+      className={cx(slots?.root, slotProps?.root?.className, className)}
+      // Root-level `style` is applied last so it wins over slotProps.root.style.
+      // This mirrors how className behaves: the more specific prop takes precedence.
+      style={slotProps?.root?.style || style
+        ? { ...slotProps?.root?.style, ...style }
+        : undefined}
+    >
       {items.map((item, index) => {
         const isOpen = expandedMap.has(item.id)
         const buttonId = getButtonId(item.id)
         const panelId = getPanelId(item.id)
 
         return (
-          <div key={item.id}>
+          <div
+            key={item.id}
+            className={cx(slots?.item, slotProps?.item?.className)}
+            style={slotProps?.item?.style}
+          >
             <button
               ref={(el) => {
                 buttonRefs.current[index] = el
@@ -131,6 +155,8 @@ export function Accordion({
               onKeyDown={(e) => handleKeyDown(e, index)}
               aria-expanded={isOpen}
               aria-controls={panelId}
+              className={cx(slots?.header, slotProps?.header?.className)}
+              style={slotProps?.header?.style}
             >
               {item.title}
             </button>
@@ -140,6 +166,8 @@ export function Accordion({
                 id={panelId}
                 role="region"
                 aria-labelledby={buttonId}
+                className={cx(slots?.content, slotProps?.content?.className)}
+                style={slotProps?.content?.style}
               >
                 {item.content}
               </div>
