@@ -1,0 +1,68 @@
+/* ─── Root ─── */
+
+.accordion {
+  border: 1px solid #000000;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* ─── Item ─── */
+
+.accordion__item {
+  border-bottom: 1px solid #000000;
+}
+
+.accordion__item:last-child {
+  border-bottom: none;
+}
+
+/* ─── Trigger (header button) ─── */
+
+.accordion__trigger {
+  all: unset;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #18181b;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.15s ease;
+}
+
+.accordion__trigger:hover {
+  background: #fafafa;
+}
+
+.accordion__trigger:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: -2px;
+}
+
+/* Chevron icon */
+.accordion__trigger svg {
+  flex-shrink: 0;
+  margin-left: 12px;
+  color: #a1a1aa;
+  transition: transform 0.2s ease;
+}
+
+.accordion__trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+/* ─── Content panel ─── */
+
+.accordion__content {
+  padding: 0 18px 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #52525b;
+}
